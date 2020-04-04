@@ -1,0 +1,13 @@
+Package: openthl
+Type: Package
+Title: R tools for THL open data API
+Version: 0.1.0
+Authors@R: person("Tuomo", "Nieminen", email = "tuomo.nieminen@thl.fi",
+                  role = c("aut", "cre"))
+Description: R package for reading data from THL open data API to R.
+    R tools for accessing thl open data.
+Imports: magrittr, httr, jsonlite, tibble
+License: EUPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.0
