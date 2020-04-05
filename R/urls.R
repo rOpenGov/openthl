@@ -19,6 +19,27 @@ url_api <- function(type = c("prod", "beta")) {
   paste0(url_base(type), "api")
 }
 
+api2base <- function(x) {
+  gsub("api$", "", x)
+}
+
+api_data_url <- function(api, path, format = "json") {
+  x <- list(api = api, path = path, format = format)
+  structure(x, class = "api_data_url")
+}
+
+#' print method for api_data_url
+#'
+#' @param x object of class api_data_url
+#'
+#' @export
+print.api_data_url <- function(x, no.print = FALSE, ...) {
+  url <- paste0(x$api, "/", x$path, ".", x$format)
+  if(!no.print)
+    cat(url)
+  invisible(url)
+}
+
 #' API URL of a subject
 #'
 #' @examples
@@ -26,8 +47,8 @@ url_api <- function(type = c("prod", "beta")) {
 #'   url_subject("toitu")
 #'
 #' @noRd
-url_subject <- function(subject, api = url_api()) {
-  file.path(api, subject)
+url_subject <- function(subject, api = url_api(), format = "json") {
+  api_data_url(api = api, path = subject, format = format )
 }
 
 #' API URL of a hydra
@@ -38,9 +59,8 @@ url_subject <- function(subject, api = url_api()) {
 #'   url_hydra("toitu", "ennakko3")
 #'
 #' @noRd
-url_hydra <- function(subject, hydra, api = url_api()) {
-  url <- url_subject(subject, api = api)
-  file.path(url, hydra)
+url_hydra <- function(subject, hydra, api = url_api(), format = "json") {
+  api_data_url(api = api, path = paste0(subject, "/", hydra), format = format)
 }
 
 
