@@ -1,16 +1,30 @@
+getFromAPI <- function(x) {
+  UseMethod("getFromAPI", x)
+}
+
 #' Retrieve data from the pivot API
 #'
-#' @param url URL to get
-#' @param format format to parse into
+#' @param api_data_url Object of class api_data_url
 #'
-getFromAPI <- function(url, format = "json") {
-  url <- paste0(url, ".", format)
+getFromAPI.api_data_url <- function(api_data_url) {
+  url <- print(api_data_url, no.print = TRUE)
   r <- httr::GET(url)
   status <- httr::status_code(r)
+
   if(status != 200) {
     warning(paste("API returned HTTP error", status))
   }
-  parse_api_response(r, format)
+
+  response <- parse_api_response(r, format = api_data_url$format)
+  structure(response,
+            class = "api_response",
+            api_data_url = api_data_url,
+            status = status)
+}
+
+
+api_url_from_response  <- function(x) {
+  attr(x, "api_data_url")$api
 }
 
 #' Parse api response
@@ -19,8 +33,11 @@ getFromAPI <- function(url, format = "json") {
 parse_api_response <- function(r, format) {
 
   if(format == "json") {
-    x <- httr::content(r, as = "text")
-    x <- jsonlite::fromJSON(x)
+    txt <- httr::content(r, as = "text")
+    if(grepl("^thl\\.pivot\\.loadDimensions\\(", txt))
+      txt <- strip_dimension_callback(txt)
+
+    x <- jsonlite::fromJSON(txt)
     return(x)
   }
 
@@ -28,4 +45,13 @@ parse_api_response <- function(r, format) {
     stop("Format not supported")
   }
 
+}
+
+#' strip the call to thl.pivot.loadDimensions from JSONP response
+#'
+#' @noRd
+strip_dimension_callback <- function(txt) {
+  txt <- gsub("^thl\\.pivot\\.loadDimensions\\(", "", txt)
+  txt <- gsub("\\);\n$", "", txt)
+  txt
 }
