@@ -2,7 +2,7 @@
 
 [![Build
 Status](https://travis-ci.org/rOpenGov/openthl.svg?branch=master)](https://travis-ci.org/rOpenGov/openthl)
-[![codecov.io](https://codecov.io/github/rOpenGov/openthl/coverage.svg?branch=master)](https://codecov.io/github/rOpenGov/openthl?branch=master)
+<!--[![codecov.io](https://codecov.io/github/rOpenGov/openthl/coverage.svg?branch=master)](https://codecov.io/github/rOpenGov/openthl?branch=master)-->
 [![Gitter](https://badges.gitter.im/rOpenGov/openthl.svg)](https://gitter.im/rOpenGov)
 [![Watch on
 GitHub](https://img.shields.io/github/watchers/ropengov/openthl.svg?style=social)](https://github.com/ropengov/openthl/watchers)
@@ -34,7 +34,7 @@ Contributions are very welcome:
     feedback and bug reports.
 -   [Send pull requests](https://github.com/ropengov/openthl/)
 -   [Star us on the Github page](https://github.com/ropengov/openthl)
--   [Join the discussion in Gitter](https://gitter.im/rOpenGov/openthl)
+-   [Join the discussion in Gitter](https://gitter.im/rOpenGov/)
 
 ### Acknowledgements
 
