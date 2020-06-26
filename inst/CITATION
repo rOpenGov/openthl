@@ -1,0 +1,19 @@
+citHeader("Kindly cite the hetu R package as follows:")
+
+citEntry(entry="misc",
+         title = "R package for THL Open API (openthl)",
+         author = personList(
+	   person(given ="Tuomo", family="Nieminen", email = "tuomo.nieminen@thl.fi"),
+	   person(given ="Leo", family="Lahti")
+         ),
+	 doi = "",
+	 journal = "",
+	 year = "2020",
+         textVersion =
+         paste("(C) Tuomo Nieminen, Leo Lahti (2020). ",
+               "R package for THL Open API (openthl). ",
+	       "URL: http://github.com/rOpenGov/openthl",
+               sep=" ")
+         )
+
+citFooter("\nMany thanks for all contributors!")

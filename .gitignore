@@ -1,6 +1,11 @@
+*~
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 *.Rproj
 /man
+inst/extras/openthl.Rcheck
+inst/extras/openthl_*.tar.gz
+vignettes/vignette.html
+vignettes/vignette.md

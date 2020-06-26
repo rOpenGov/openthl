@@ -1,0 +1,95 @@
+---
+title: "THL Open API R package"
+author: "Tuomo Nieminen, Leo Lahti"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+  rmarkdown::md_vignette:
+    toc: true    
+vignette: >
+  %\VignetteIndexEntry{THL Open API R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{Cairo}
+  \usepackage[utf8]{inputenc}  
+---
+
+The **openthl R package** provides tools to work with THL Open API.
+
+
+## Installation
+
+Install the current devel version in R:
+
+```{r install, eval=FALSE}
+devtools::install_github("ropengov/openthl")
+```
+
+Test the installation by loading the library:
+
+```{r test, message=FALSE, warning=FALSE, eval=TRUE}
+library(openthl)
+```
+
+We also recommend setting the UTF-8 encoding:
+
+```{r locale, eval=FALSE}
+Sys.setlocale(locale="UTF-8") 
+```
+
+
+## Examples
+
+```{r}
+library(openthl)
+
+x <- getSubject("epirapo") # S3 classes "api_response" "thl_subject" 
+datasets <- getDatasets(x)
+cube <- getCube(datasets, index = 1L) # a very messy object for now
+```
+
+### S3 classes
+
+These are preliminary and very much subject to change
+
+**api_data_url**
+
+list with elements:
+
+- api: url to the api
+- path: defines what to get from the api
+- format: "json"
+
+has a print method
+
+**api_response**
+
+list with elements:
+
+- response (parsed json response: a list or a data frame)
+- api_data_url: api_data_url Object
+- status: status code of the response
+
+
+
+
+## Licensing and Citations
+
+This work can be freely used, modified and distributed under the open license specified in the [DESCRIPTION file](https://github.com/rOpenGov/openthl/blob/master/DESCRIPTION).
+
+Kindly cite the work as follows
+
+```{r citation, message=FALSE, eval=TRUE}
+citation("openthl")
+```
+
+
+
+## Session info
+
+This vignette was created with
+
+```{r sessioninfo, message=FALSE, warning=FALSE}
+sessionInfo()
+```

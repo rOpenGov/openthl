@@ -1,0 +1,18 @@
+language: r
+sudo: required
+cache: packages
+dist: trusty
+
+warnings_are_errors: false
+
+notifications:
+  email:
+    - tuomo.nieminen@thl.fi
+
+r_packages:
+  - magrittr
+  - httr
+  - jsonlite
+  - tibble
+
+

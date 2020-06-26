@@ -70,6 +70,7 @@ getDatasets <- function(x) {
 #' x <- getSubject("epirapo")
 #' datasets <- getDatasets(x)
 #' cube <- getCube(datasets, index = 1L)
+#' @export
 #'
 getCube <- function(datasets, index = 1L) {
 

@@ -2,6 +2,7 @@
 
 S3method(print,api_data_url)
 export("%>%")
+export(getCube)
 export(getDatasets)
 export(getHydra)
 export(getSubject)
