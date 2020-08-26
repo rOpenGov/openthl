@@ -1,7 +1,7 @@
 
 
 
-#' Get hydra
+#' THL Hydra
 #'
 #' @param subject Subject name, chracter
 #' @param hydra Hydra name, character
@@ -11,49 +11,50 @@
 #'
 #' subject <- "toitu"
 #' hydra <- "ennakko3"
-#' getHydra(subject, hydra)
+#' h <- thlHydra(subject, hydra)
 #'
 #' @export
-getHydra <- function(subject, hydra, api = url_api()) {
-  url <- url_hydra(subject = subject, hydra = hydra, api = api)
+thlHydra <- function(subject, hydra, api = url_api()) {
+  url <- openthl:::url_hydra(subject = subject, hydra = hydra, api = api)
+
   x <- getFromAPI(url)
-  hydra <- parse_hydra(x)
-  structure(hydra,
-            class = c(class(hydra), "api_response", "thl_hydra"),
-            api_data_url = attr(x, "api_data_url"))
+  meta <- parse_hydra(x)
+  structure(meta,
+            class = c(class(meta), "thlHydra"),
+            url = url)
 }
 
-#' @describeIn getHydra Get subject
+#' @describeIn thlHydra THL subject
 #'
 #' @examples
-#' getSubject("thil")
+#' thlSubject("thil")
 #'
 #' @export
-getSubject <- function(subject, api = url_api()) {
-  data_url <- url_subject(subject, api = api)
-  x <- getFromAPI(data_url)
+thlSubject <- function(subject, api = url_api()) {
+  url <- url_subject(subject, api = api)
+  x <- getFromAPI(url)
   subj <- parse_subject(x)
   structure(subj,
-            class = c(class(subj), "api_response", "thl_subject"),
-            api_data_url = attr(x, "api_data_url"))
+            class = c(class(subj), "thlSubject"),
+            url = url)
 }
 
-#' @describeIn getHydra Show data sets for subject or hydra
+#' @describeIn thlHydra Show datasets for a thlSubject or a thlHydra
 #'
-#' @param x An object of class 'thl-subject' or 'thl-hydra'
+#' @param x An object of class 'thlSubject' or 'thlHydra'
 #'
 #' @examples
 #'
-#' x <- getSubject("epirapo")
-#' datasets <- getDatasets(x)
+#' x <- thlSubject("epirapo")
+#' datasets <- thlDatasets(x)
 #'
 #' @export
-getDatasets <- function(x) {
+thlDatasets <- function(x) {
 
-  api_url <- api_url_from_response(x)
-  base_url <- api2base(api_url)
+  api_url <- attr(attr(x, "url"), "api-url")
+  base_url <- openthl:::api2base(api_url)
   df <- x[x$class == "dataset", ]
-  df2 <- parse_datasets(df, base_url = base_url)
+  df2 <- openthl:::parse_datasets(df, base_url = base_url)
   structure(df2,
             class = c(class(df2), "api_datasets"))
 }
@@ -67,8 +68,7 @@ getDatasets <- function(x) {
 #'
 #' @examples
 #'
-#' x <- getSubject("epirapo")
-#' datasets <- getDatasets(x)
+#' hydra <- getHydra("epirapo", "covid19case")
 #' cube <- getCube(datasets, index = 1L)
 #' @export
 #'
