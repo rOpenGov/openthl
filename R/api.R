@@ -1,13 +1,11 @@
-getFromAPI <- function(x) {
-  UseMethod("getFromAPI", x)
-}
 
-#' Retrieve data from the pivot API
+
+#' Retrieve data from the THL open data API
 #'
-#' @param api_data_url Object of class api_data_url
+#' @param url An URL
 #'
-getFromAPI.api_data_url <- function(api_data_url) {
-  url <- print(api_data_url, no.print = TRUE)
+#' @export
+getFromAPI <- function(url) {
   r <- httr::GET(url)
   status <- httr::status_code(r)
 
@@ -15,35 +13,27 @@ getFromAPI.api_data_url <- function(api_data_url) {
     warning(paste("API returned HTTP error", status))
   }
 
-  response <- parse_api_response(r, format = api_data_url$format)
+  response <- parse_api_response(r)
   structure(response,
             class = "api_response",
-            api_data_url = api_data_url,
+            url = url,
             status = status)
 }
 
 
-api_url_from_response  <- function(x) {
-  attr(x, "api_data_url")$api
-}
 
 #' Parse api response
 #'
 #' @noRd
-parse_api_response <- function(r, format) {
+parse_api_response <- function(r) {
 
-  if(format == "json") {
-    txt <- httr::content(r, as = "text")
-    if(grepl("^thl\\.pivot\\.loadDimensions\\(", txt))
-      txt <- strip_dimension_callback(txt)
+  txt <- httr::content(r, as = "text")
+  if(grepl("^thl\\.pivot\\.loadDimensions\\(", txt))
+    txt <- strip_dimension_callback(txt)
 
-    x <- jsonlite::fromJSON(txt)
-    return(x)
-  }
+  x <- jsonlite::fromJSON(txt)
+  return(x)
 
-  else{
-    stop("Format not supported")
-  }
 
 }
 

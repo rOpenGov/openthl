@@ -24,21 +24,12 @@ api2base <- function(x) {
 }
 
 api_data_url <- function(api, path, format = "json") {
-  x <- list(api = api, path = path, format = format)
-  structure(x, class = "api_data_url")
+  txt <- paste0(api, "/", path, ".", format)
+  attr(txt, "api-url") <- api
+  class(txt) <- c(class(txt), "api-data-url")
+  txt
 }
 
-#' print method for api_data_url
-#'
-#' @param x object of class api_data_url
-#'
-#' @export
-print.api_data_url <- function(x, no.print = FALSE, ...) {
-  url <- paste0(x$api, "/", x$path, ".", x$format)
-  if(!no.print)
-    cat(url)
-  invisible(url)
-}
 
 #' API URL of a subject
 #'
