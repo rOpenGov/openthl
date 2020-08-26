@@ -56,7 +56,7 @@ thlDatasets <- function(x) {
   df <- x[x$class == "dataset", ]
   df2 <- openthl:::parse_datasets(df, base_url = base_url)
   structure(df2,
-            class = c(class(df2), "api_datasets"))
+            class = c(class(df2), "thlDatasets"))
 }
 
 
