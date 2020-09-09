@@ -5,7 +5,7 @@
 #' @param url An URL
 #'
 #' @export
-getFromAPI <- function(url) {
+getFromAPI <- function(url, type = c("meta", "data")) {
   r <- httr::GET(url)
   status <- httr::status_code(r)
 
@@ -13,7 +13,8 @@ getFromAPI <- function(url) {
     warning(paste("API returned HTTP error", status))
   }
 
-  response <- parse_api_response(r)
+  type <- match.arg(type)
+  response <- parse_api_response(r, type = type)
   structure(response,
             class = "api_response",
             url = url,
@@ -25,13 +26,16 @@ getFromAPI <- function(url) {
 #' Parse api response
 #'
 #' @noRd
-parse_api_response <- function(r) {
+parse_api_response <- function(r, type = c("meta", "data")) {
 
   txt <- httr::content(r, as = "text")
   if(grepl("^thl\\.pivot\\.loadDimensions\\(", txt))
     txt <- strip_dimension_callback(txt)
 
-  x <- jsonlite::fromJSON(txt)
+  type <- match.arg(type)
+  x <- switch(type,
+              "meta"= jsonlite::fromJSON(txt),
+              "data" = rjstat::fromJSONstat(url))
   return(x)
 
 

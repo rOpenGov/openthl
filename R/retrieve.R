@@ -68,31 +68,46 @@ thlDatasets <- function(x) {
 #'
 #' @examples
 #'
-#' hydra <- getHydra("epirapo", "covid19case")
-#' cube <- getCube(datasets, index = 1L)
+#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' cube <- thlCube(url)
 #' @export
 #'
-getCube <- function(datasets, index = 1L) {
+thlCube <- function(url) {
 
   # The idea is that the object returned by this function
   # would know it's location and dimensions
   # then methods can be written to retrieve data.
 
+  url_new <- gsub(".json$","", url)
+  url_new <- unlist(strsplit(url_new, split = "/"))
 
-  if(index > nrow(datasets)) stop("Index is larger than the number of datasets")
-  ds <- datasets[index, , drop = FALSE]
+  base_url <- paste0(url_new[1:5], collapse = "/")
+  url_new <- url_new[c(-c(1:5))]
 
-  fact_path <- paste0(ds$lang, "/", ds$subject, "/", ds$hydra, "/fact_",ds$cube)
-  dimension_path <-  paste0(fact_path, ".dimensions")
-  dimensionURL <- api_data_url(api = ds$base_url,
+  dimension_path <- paste0(paste(url_new, collapse = "/"), ".dimensions")
+
+  dimensionURL <- api_data_url(api =base_url,
                path = dimension_path,
                format = "json")
 
   dimensions <- getFromAPI(dimensionURL)
 
   # TODO: the messy dimensions object needs a smart format and methods to handle it
-  list(dataset = ds,
+  res <- list(url = url,
        dimensions = dimensions)
+
+  class(res) <- "thl_cube"
+  res
 }
+
+#' Print a THL cube
+#'
+#' @param x Object of class "thl_cube"
+#'
+#' @export
+print.thl_cube <- function(x) {
+  cat("Cube with columns", colnames(x))
+}
+
 
 
