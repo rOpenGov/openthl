@@ -31,59 +31,101 @@ parse_datasets <- function(x, base_url) {
 }
 
 
+#' Parse dimensions
+#'
+#'
+#' @author Tuomo Nieminen
+#'
 #' @examples
 #'
-#'  url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
 #' cube <- thlCube(url)
 #' dimensions <- cube$dimensions
+#' x <- parse_dimensions(dimensions)
+#' names(x)
+#' str(x[[1]])
 parse_dimensions <- function(dimensions) {
-
-  i <- 1
 
   dims <- list()
   for(i in seq_along(dimensions$id)) {
-    dimension_hierarchy <- getHierarchy(dimensions$children[[i]], parent_id = dimensions$id[[i]])
-    dims <- c(dims, list(dimension_hierarchy))
+    dimension_df <- getHierarchy(dimensions$children[[i]], parent_id = dimensions$id[[i]])
+    class(dimension_df) <- "hydra_dimension_df"
+    dims <- c(dims, list(dimension_df))
+  }
+  names(dims) <- dimensions$id
+  class(dims) <- "hydra_dimensions"
+  dims
 }
 
-}
 
-
-
+#' Dimension hierarchy as a data frame
+#'
+#' Recursively retrieve all children of the dimension and flatten as a single data frame.
+#'
+#' @note Kiitos HY TIRA-kurssi 2013
+#'
+#' @author Tuomo Nieminen
+#'
+#' @examples
+#'
+#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' cube <- thlCube(url)
+#'
+#' df <- getHierarchy(cube$dimensions$children[[1]], parent_id = cube$dimensions$id[[1]])
 getHierarchy <- function(stage, parent_id = NA, nstage = 0) {
+
   children <- stage$children
   stage$children <- NULL
-  stage_id <- stage$id
-  if(length(stage) == 0) return(NULL)
+
+  # add id of parent
   stage$parent_id <- parent_id
-  stage_df <- as.data.frame.dimension_stage(stage, nstage)
 
-  if(ncol(stage_df) == 0) return(NULL)
-  if(length(children) != 0) {
-    newchilds <- list()
-    for(i in seq_along(children)) {
-      if(length(children[[i]]$stage) > 0)
-        newchilds[[i]] <- getHierarchy(children[[i]], parent_id = stage_id[i], nstage = nstage + 1)
+  # convert to df, rename columns names by appending paste0('stage_',nstage)
+  if(nstage > 0) # if not root
+    stage_df <- as.data.frame.dimension_stage(stage, nstage)
+
+  # keep record of number of stages
+  deepest_stage <- nstage
+
+  # recursively retrieve children
+  newchilds <- list()
+  for(i in seq_along(children)) {
+    if(length(children[[i]]$stage) > 0) {
+      newchilds[[i]] <- getHierarchy(children[[i]], parent_id = stage$id[i], nstage = nstage + 1)
+      deepest_stage <- attr(newchilds[[1]], "nstage")
     }
-    children_df <- dplyr::bind_rows(newchilds)
-  } else {
-    children_df <-  dplyr::bind_rows(list())
   }
+  children_df <- dplyr::bind_rows(newchilds)
 
+  # join parent and child using parent id
   if(nrow(children_df) > 0) {
+    if(nstage >0) {
     by <- setNames(paste0("stage", nstage +1, "_parent_id"),
                    nm = paste0("stage", nstage, "_id") )
     df <- dplyr::inner_join(stage_df, children_df, by = by)
+    } else {
+      df <- children_df
+    }
   } else {
     df <- stage_df
   }
 
+  # add root as attribute
+  if(nstage == 0)
+    attr(df, "root") <- stage
+
+  # return parent and children data.frame
+  attr(df, "nstage") <- max(nstage, deepest_stage)
   df
 }
 
 
 as.data.frame.dimension_stage <- function(stage, i) {
   stage_df <- as.data.frame(stage)
+  properties <- stage_df$properties # may include
+  stage_df$properties <- NULL
+  if(!is.null(properties))
+    stage_df <- cbind(stage_df, properties)
   newnames <-  paste0("stage", i, "_", colnames(stage_df))
   colnames(stage_df) <- newnames
   stage_df
