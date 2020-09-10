@@ -39,9 +39,8 @@ parse_datasets <- function(x, base_url) {
 #' @examples
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
-#' cube <- thlCube(url)
-#' dimensions <- cube$dimensions
-#' x <- parse_dimensions(dimensions)
+#' dimensions <- openthl:::get_dimensions(url)
+#' x <- openthl:::parse_dimensions(dimensions)
 #' names(x)
 #' str(x[[1]])
 parse_dimensions <- function(dimensions) {
@@ -69,9 +68,10 @@ parse_dimensions <- function(dimensions) {
 #' @examples
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
-#' cube <- thlCube(url)
+#' dimensions <- openthl:::get_dimensions(url)
 #'
-#' df <- getHierarchy(cube$dimensions$children[[1]], parent_id = cube$dimensions$id[[1]])
+#' df <- getHierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
+#' str(df)
 getHierarchy <- function(stage, parent_id = NA, nstage = 0) {
 
   children <- stage$children

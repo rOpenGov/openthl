@@ -60,23 +60,15 @@ thlDatasets <- function(x) {
 }
 
 
-#' Get cube
+#' get dimension data of a hydra
 #'
-#' @param datasets An object of class "api_datasets" object,
-#' or a data frame with columns 'lang', 'subject', 'hydra', 'cube'.
-#' @param index an integer defining the dataset of interest from the datasets data.frame.
+#' @param url URL to hydra fact
 #'
 #' @examples
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
-#' cube <- thlCube(url)
-#' @export
-#'
-thlCube <- function(url) {
-
-  # The idea is that the object returned by this function
-  # would know it's location and dimensions
-  # then methods can be written to retrieve data.
+#' dimensions <- get_dimensions(url)
+get_dimensions <- function(url) {
 
   url_new <- gsub(".json$","", url)
   url_new <- unlist(strsplit(url_new, split = "/"))
@@ -87,14 +79,44 @@ thlCube <- function(url) {
   dimension_path <- paste0(paste(url_new, collapse = "/"), ".dimensions")
 
   dimensionURL <- api_data_url(api =base_url,
-               path = dimension_path,
-               format = "json")
+                               path = dimension_path,
+                               format = "json")
 
   dimensions <- getFromAPI(dimensionURL)
+  dimensions
 
-  # TODO: the messy dimensions object needs a smart format and methods to handle it
+}
+
+#' THL cube
+#'
+#' @param datasets An object of class "api_datasets" object,
+#' or a data frame with columns 'lang', 'subject', 'hydra', 'cube'.
+#' @param index an integer defining the dataset of interest from the datasets data.frame.
+#'
+#'
+#' TODO: this is an object which can be utilised to build quaeris to retrieve data
+#' and attach labels to the data. Methods need to be written which
+#' implement these
+#'
+#' @examples
+#'
+#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' cube <- thlCube(url)
+#' names(cube$dimensions)
+#'
+#' @export
+thlCube <- function(url) {
+
+  # The idea is that the object returned by this function
+  # would know it's location and dimensions
+  # then methods can be written to retrieve data.
+
+  dimensions <- get_dimensions(url)
+
+  hydra_dimensions <- parse_dimensions(dimensions)
+
   res <- list(url = url,
-       dimensions = dimensions)
+       dimensions = hydra_dimensions)
 
   class(res) <- "thl_cube"
   res
