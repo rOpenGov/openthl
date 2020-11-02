@@ -11,7 +11,8 @@ Imports:
   magrittr,
   httr,
   jsonlite,
-  tibble
+  tibble,
+  dplyr
 License: EUPL
 Encoding: UTF-8
 LazyData: true
