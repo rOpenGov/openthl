@@ -38,7 +38,7 @@ parse_datasets <- function(x, base_url) {
 #'
 #' @examples
 #'
-#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
 #' dimensions <- openthl:::get_dimensions(url)
 #' x <- openthl:::parse_dimensions(dimensions)
 #' names(x)
@@ -48,7 +48,7 @@ parse_dimensions <- function(dimensions) {
   dims <- list()
   for(i in seq_along(dimensions$id)) {
     dimension_df <- getHierarchy(dimensions$children[[i]], parent_id = dimensions$id[[i]])
-    class(dimension_df) <- "hydra_dimension_df"
+    class(dimension_df) <- c("hydra_dimension_df", class(dimension_df))
     dims <- c(dims, list(dimension_df))
   }
   names(dims) <- dimensions$id
@@ -67,7 +67,7 @@ parse_dimensions <- function(dimensions) {
 #'
 #' @examples
 #'
-#' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
+#' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
 #' dimensions <- openthl:::get_dimensions(url)
 #'
 #' df <- getHierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
@@ -90,7 +90,7 @@ getHierarchy <- function(stage, parent_id = NA, nstage = 0) {
   # recursively retrieve children
   newchilds <- list()
   for(i in seq_along(children)) {
-    if(length(children[[i]]$stage) > 0) {
+    if(length(children[[i]]) > 0) {
       newchilds[[i]] <- getHierarchy(children[[i]], parent_id = stage$id[i], nstage = nstage + 1)
       deepest_stage <- attr(newchilds[[1]], "nstage")
     }

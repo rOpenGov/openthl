@@ -23,7 +23,7 @@ api2base <- function(x) {
   gsub("api$", "", x)
 }
 
-api_data_url <- function(api, path, format = "json") {
+api_data_url <- function(path, api = url_api(), format = "json") {
   txt <- paste0(api, "/", path, ".", format)
   attr(txt, "api-url") <- api
   class(txt) <- c(class(txt), "api-data-url")
