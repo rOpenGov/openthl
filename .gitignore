@@ -9,3 +9,4 @@ inst/extras/openthl.Rcheck
 inst/extras/openthl_*.tar.gz
 vignettes/vignette.html
 vignettes/vignette.md
+inst/doc
