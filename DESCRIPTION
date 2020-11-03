@@ -12,7 +12,8 @@ Imports:
   httr,
   jsonlite,
   tibble,
-  dplyr
+  dplyr,
+  Cairo
 License: EUPL
 Encoding: UTF-8
 LazyData: true
