@@ -19,23 +19,34 @@ knitr::opts_chunk$set(
 library(openthl)
 ```
 
+## About
+
+This article desribes the phase of development at 2020/10. It describes several perspectives of the THL open data API and the openthl package.
+
+For a description of the API, see [THL open data API docs](https://yhteistyotilat.fi/wiki08/x/RoCkAQ).
+
 
 ## API queries and general data retrieval
 
+### API data types
+
 The API can return the following type of data
 
-- JSON (subject's hydras or cubes)
+- JSON (meta information and URLs of subject's, hydras or cubes)
 - JSONP (dimensions of a cube)
 - JSONSTAT (data of a cube)
 
-The main API interaction is coded in api.R. The function `getFromAPI()` 
+
+### General API queries
+
+The main API interaction is coded in the file `api.R`. The function `getFromAPI()` 
 is a general purpose data retrieval function. 
 It takes as parameter the URL and the 'type' of the data, which is either 'meta' or 'data'. 
 Depending on the type, the parsing of the response is handled by either 
 jsonlite (meta) or rjstat (data) packages. String manipulation is utilised to handle the JSONP case. 
 
-The general idea is that this main retrieval function is called by more specialised functions 
-which further parse the list into more useful formats (eg. data.frames, specialised S3 classes). 
+The general idea is that this main retrieval function is called by more specialised functions, 
+which further parse the content into useful formats (eg. data.frames, specialised S3 classes). 
 
 ```{r}
 url <- openthl:::api_data_url(path = "epirapo")
@@ -44,6 +55,7 @@ reslist
 ```
 
 
+### API URL's
 
 There are two public base URLs for the API: beta and prod. 
 
@@ -73,15 +85,17 @@ Relevant source codes
 - api.R
 - urls.R
 
-Development thoughts:
+*Development thoughts*:
 
 - There is currently no clear plan on how to query the beta API.
 - the scope of the package could maybe be restricted to JSON data and hence all function 
-arguments related to the format are not needed.
+arguments related to the format may not be needed.
 
 
 
 ## API exploration and user starting point
+
+### API terminology
 
 The API terminology includes the following hierarchy
 
@@ -93,6 +107,8 @@ The subject is a bit like schema. A subject can include multiple hydras.
 A hydra can include multiple cubes. A cube is a multidimensional dataset with labels 
 according to a single language. 
 I believe that there are always as many cubes in the hydra as there are translations to the dataset. 
+
+### User interaction with the terminology
 
 `thlSubject()` lists all cubes belonging to a subject
 
@@ -118,8 +134,7 @@ thlHydra(subject, hydra = "covid19case")
 ```
 
 
-Development needs:
-
+### Development needs
 
 - It is a bit unclear what is the usual starting point for the user. Is it an url to a cube? Is it an URL to a hydra? Is it the name of the subject and hydra?
 - thlDatasets should probably take as input the subject name (i.e. call thlSubject() internally first)
@@ -128,10 +143,14 @@ Main functionality source file location: `retrieve.R`
 
 
 
-## Cube dimensions
+## Cube dimensions: labels and metadata
+
+### Dimensions
 
 A single dimension in the cube is a hierarchical structure with multiple stages. 
 An example is Area with stages hospital district (stage 1) and municipality (stage 2). 
+
+### thlCube object
 
 the thlCube function now returns an object which includes
 
@@ -148,6 +167,9 @@ cube <- openthl::thlCube(url)
 names(cube$dimensions)
 ```
 
+
+### Dimensions object
+
 The hierarchical dimension information is presented as a wide format data frame. 
 The prefix in the column names indicates the stage. 
 There is a single row per a unique label in the highest hierarchy level. 
@@ -159,7 +181,7 @@ str(cube$dimensions[[1]]) # first dimension
 ```
 
 
-## Dimension retrieval/parsing
+### Dimension retrieval and parsing
 
 
 The function `get_dimensions` queries the API for dimension information. 
@@ -188,6 +210,12 @@ str(df)
 
 ## Data retrieval
 
+### Backend
+
+Data retriaval and parsing is largely unimplemented. The general data retriaval function with type 'data' should be tested and parsing implemented.
+
+
+### User interface
 
 Methods could be written which utilise the object returned by `openthl::thlCube`, 
 which contains the dimension meta informantion, to build queries which
