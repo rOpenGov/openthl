@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>API URL — url_api • openthl</title>
+<title>Parse dimensions — parse_dimensions • openthl</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="API URL — url_api" />
-<meta property="og:description" content="API URL" />
+<meta property="og:title" content="Parse dimensions — parse_dimensions" />
+<meta property="og:description" content="Parse dimensions" />
 
 
 
@@ -121,31 +121,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>API URL</h1>
+    <h1>Parse dimensions</h1>
     
-    <div class="hidden name"><code>url_api.Rd</code></div>
+    <div class="hidden name"><code>parse_dimensions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>API URL</p>
+    <p>Parse dimensions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>url_api</span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"prod"</span>, <span class='st'>"beta"</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>parse_dimensions</span><span class='op'>(</span><span class='va'>dimensions</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>type</th>
-      <td><p>Production or beta version?</p></td>
+      <th>dimensions</th>
+      <td><p>Object returned by openthl:::get_dimensions.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Tuomo Nieminen</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>url_api</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "https://sampo.thl.fi/pivot/prod/api"</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='va'>url</span> <span class='op'>&lt;-</span> <span class='st'>"https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"</span>
+<span class='va'>dimensions</span> <span class='op'>&lt;-</span> <span class='fu'>openthl</span><span class='fu'>:::</span><span class='fu'><a href='get_dimensions.html'>get_dimensions</a></span><span class='op'>(</span><span class='va'>url</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>openthl</span><span class='fu'>:::</span><span class='fu'>parse_dimensions</span><span class='op'>(</span><span class='va'>dimensions</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "hcdmunicipality2020"      "dateweek2020010120201231"
+#&gt; [3] "ttr10yage"                "sex"                     
+#&gt; [5] "measure"                 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Classes ‘hydra_dimension_df’ and 'data.frame':	310 obs. of  15 variables:
+#&gt;  $ stage1_id       : chr  "hcdmunicipality20202" "hcdmunicipality20202" "hcdmunicipality20202" "hcdmunicipality20202" ...
+#&gt;  $ stage1_sid      : int  445131 445131 445131 445131 445131 445131 445131 445131 445131 445131 ...
+#&gt;  $ stage1_label    : chr  "Åland" "Åland" "Åland" "Åland" ...
+#&gt;  $ stage1_stage    : chr  "hcd" "hcd" "hcd" "hcd" ...
+#&gt;  $ stage1_code     : chr  "hcdmunicipality20202" "hcdmunicipality20202" "hcdmunicipality20202" "hcdmunicipality20202" ...
+#&gt;  $ stage1_sort     : int  2 2 2 2 2 2 2 2 2 2 ...
+#&gt;  $ stage1_uri      : chr  "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/hcd/2" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/hcd/2" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/hcd/2" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/hcd/2" ...
+#&gt;  $ stage1_parent_id: chr  "hcdmunicipality20201" "hcdmunicipality20201" "hcdmunicipality20201" "hcdmunicipality20201" ...
+#&gt;  $ stage2_id       : chr  "hcdmunicipality202023" "hcdmunicipality202024" "hcdmunicipality202025" "hcdmunicipality202026" ...
+#&gt;  $ stage2_sid      : int  445268 444988 445090 445231 445227 445124 445080 445266 445153 445091 ...
+#&gt;  $ stage2_label    : chr  "Brändö" "Eckerö" "Finström" "Föglö" ...
+#&gt;  $ stage2_stage    : chr  "municipality" "municipality" "municipality" "municipality" ...
+#&gt;  $ stage2_code     : chr  "hcdmunicipality202023" "hcdmunicipality202024" "hcdmunicipality202025" "hcdmunicipality202026" ...
+#&gt;  $ stage2_sort     : int  23 24 25 26 27 28 29 30 31 32 ...
+#&gt;  $ stage2_uri      : chr  "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/municipality/23" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/municipality/24" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/municipality/25" "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/municipality/26" ...
+#&gt;  - attr(*, "root")='data.frame':	1 obs. of  8 variables:
+#&gt;   ..$ id       : chr "hcdmunicipality20201"
+#&gt;   ..$ sid      : int 445222
+#&gt;   ..$ label    : chr "All areas"
+#&gt;   ..$ stage    : chr "root"
+#&gt;   ..$ code     : chr "hcdmunicipality20201"
+#&gt;   ..$ sort     : int 1
+#&gt;   ..$ uri      : chr "http://meta.thl.fi/codes/wild/dimension/hcdmunicipality2020/1/root/1"
+#&gt;   ..$ parent_id: chr "hcdmunicipality2020"
+#&gt;  - attr(*, "nstage")= num 2</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

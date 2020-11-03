@@ -81,7 +81,7 @@ arguments related to the format are not needed.
 
 
 
-## Exploring the API
+## API exploration and user starting point
 
 The API terminology includes the following hierarchy
 
