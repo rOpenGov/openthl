@@ -3,6 +3,8 @@
 #' Retrieve data from the THL open data API
 #'
 #' @param url An URL
+#' @param type 'meta' uses jsonlite package for response content parsing,
+#' 'data' uses rjstat.
 #'
 #' @export
 getFromAPI <- function(url, type = c("meta", "data")) {

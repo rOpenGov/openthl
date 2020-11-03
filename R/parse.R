@@ -20,6 +20,9 @@ parse_hydra <- function(x) {
 
 
 #' Parse dataset hrefs into a matrix with colums lang, subject, hydra, data matrix
+#'
+#' @param x a list/data.frame with element named 'href'.
+#' @param base_url base URL of the API. See url_base()
 parse_datasets <- function(x, base_url) {
   refs <- gsub(base_url, "", x$href)
   m <- matrix(unlist(strsplit(refs, split = "/")), nrow = nrow(x), byrow = TRUE)
@@ -33,6 +36,7 @@ parse_datasets <- function(x, base_url) {
 
 #' Parse dimensions
 #'
+#' @param dimensions Object returned by openthl:::get_dimensions.
 #'
 #' @author Tuomo Nieminen
 #'
@@ -59,7 +63,12 @@ parse_dimensions <- function(dimensions) {
 
 #' Dimension hierarchy as a data frame
 #'
+#' @param stage a hierarchical list with dimension stage and it's children.
+#' @param parent_id Id of the parent of the stage.
+#' @param nstage The depth of the stage relative to the root (which is 0).
+#'
 #' Recursively retrieve all children of the dimension and flatten as a single data frame.
+#' Helper for parse_dimensions()
 #'
 #' @note Kiitos HY TIRA-kurssi 2013
 #'
@@ -70,7 +79,7 @@ parse_dimensions <- function(dimensions) {
 #' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
 #' dimensions <- openthl:::get_dimensions(url)
 #'
-#' df <- getHierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
+#' df <- openthl:::getHierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
 #' str(df)
 getHierarchy <- function(stage, parent_id = NA, nstage = 0) {
 
@@ -100,7 +109,7 @@ getHierarchy <- function(stage, parent_id = NA, nstage = 0) {
   # join parent and child using parent id
   if(nrow(children_df) > 0) {
     if(nstage >0) {
-    by <- setNames(paste0("stage", nstage +1, "_parent_id"),
+    by <- stats::setNames(paste0("stage", nstage +1, "_parent_id"),
                    nm = paste0("stage", nstage, "_id") )
     df <- dplyr::inner_join(stage_df, children_df, by = by)
     } else {

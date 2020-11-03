@@ -15,7 +15,7 @@
 #'
 #' @export
 thlHydra <- function(subject, hydra, api = url_api()) {
-  url <- openthl:::url_hydra(subject = subject, hydra = hydra, api = api)
+  url <- url_hydra(subject = subject, hydra = hydra, api = api)
 
   x <- getFromAPI(url)
   meta <- parse_hydra(x)
@@ -52,9 +52,9 @@ thlSubject <- function(subject, api = url_api()) {
 thlDatasets <- function(x) {
 
   api_url <- attr(attr(x, "url"), "api-url")
-  base_url <- openthl:::api2base(api_url)
+  base_url <- api2base(api_url)
   df <- x[x$class == "dataset", ]
-  df2 <- openthl:::parse_datasets(df, base_url = base_url)
+  df2 <- parse_datasets(df, base_url = base_url)
   structure(df2,
             class = c(class(df2), "thlDatasets"))
 }
@@ -67,7 +67,7 @@ thlDatasets <- function(x) {
 #' @examples
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
-#' dimensions <- get_dimensions(url)
+#' dimensions <- openthl:::get_dimensions(url)
 get_dimensions <- function(url) {
 
   url_new <- gsub(".json$","", url)
@@ -89,12 +89,10 @@ get_dimensions <- function(url) {
 
 #' THL cube
 #'
-#' @param datasets An object of class "api_datasets" object,
-#' or a data frame with columns 'lang', 'subject', 'hydra', 'cube'.
-#' @param index an integer defining the dataset of interest from the datasets data.frame.
+#' @param url URL to a cube.
 #'
 #'
-#' TODO: this is an object which can be utilised to build quaeris to retrieve data
+#' TODO: this is an object which can be utilised to build queries to retrieve data
 #' and attach labels to the data. Methods need to be written which
 #' implement these
 #'
