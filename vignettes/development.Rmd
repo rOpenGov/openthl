@@ -32,9 +32,9 @@ For a description of the API, see [THL open data API docs](https://yhteistyotila
 
 The API can return the following type of data
 
-- JSON (meta information and URLs of subject's, hydras or cubes)
-- JSONP (dimensions of a cube)
-- JSONSTAT (data of a cube)
+- JSON (API meta information: hrefs and names of datasets)
+- JSONP (dimensions of a dataset: data labels and classifications)
+- JSONSTAT (data)
 
 
 ### General API queries
@@ -43,7 +43,7 @@ The main API interaction is coded in the file `api.R`. The function `getFromAPI(
 is a general purpose data retrieval function. 
 It takes as parameter the URL and the 'type' of the data, which is either 'meta' or 'data'. 
 Depending on the type, the parsing of the response is handled by either 
-jsonlite (meta) or rjstat (data) packages. String manipulation is utilised to handle the JSONP case. 
+jsonlite (meta) or rjstat (data) packages. String manipulation is utilised to handle the JSONP case after which jsonlite is used.
 
 The general idea is that this main retrieval function is called by more specialised functions, 
 which further parse the content into useful formats (eg. data.frames, specialised S3 classes). 
@@ -80,7 +80,7 @@ The API can return csv or json type data, but I think it would make sense for th
 openthl:::api_data_url("epirapo", format = "json")
 ```
 
-Relevant source codes
+Relevant source codes:
 
 - api.R
 - urls.R
@@ -103,8 +103,8 @@ The API terminology includes the following hierarchy
 - hydra (hydra)
 - kuutio (cube)
 
-The subject is a bit like schema. A subject can include multiple hydras. 
-A hydra can include multiple cubes. A cube is a multidimensional dataset with labels 
+The subject is a bit like a schema. A single subject can include multiple hydras. 
+A single hydra can include multiple cubes. A cube is a dataset with labels 
 according to a single language. 
 I believe that there are always as many cubes in the hydra as there are translations to the dataset. 
 
@@ -120,7 +120,7 @@ x
 
 `thlDatasets()` takes the output of `thlSubject()` and presents the same information, 
 but parses the hrefs into columns. There is probably no good reason why `thlDatasets()` could not simply accept the subject character name as input, 
-but currently it only accepts the object returned by `thlSubject()`
+but currently it only accepts the object returned by `thlSubject()`.
 
 ```{r}
 thlDatasets(x)
@@ -134,9 +134,9 @@ thlHydra(subject, hydra = "covid19case")
 ```
 
 
-### Development needs
+*Development thoughts*:
 
-- It is a bit unclear what is the usual starting point for the user. Is it an url to a cube? Is it an URL to a hydra? Is it the name of the subject and hydra?
+- It is a bit unclear what should be the starting point for the user. Is it an url to a cube? Is it an URL to a hydra? Is it the name of the subject and hydra?
 - thlDatasets should probably take as input the subject name (i.e. call thlSubject() internally first)
 
 Main functionality source file location: `retrieve.R`

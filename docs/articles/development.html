@@ -90,17 +90,30 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">openthl</span><span class="op">)</span></pre></div>
+<div id="about" class="section level2">
+<h2 class="hasAnchor">
+<a href="#about" class="anchor"></a>About</h2>
+<p>This article desribes the phase of development at 2020/10. It describes several perspectives of the THL open data API and the openthl package.</p>
+<p>For a description of the API, see <a href="https://yhteistyotilat.fi/wiki08/x/RoCkAQ">THL open data API docs</a>.</p>
+</div>
 <div id="api-queries-and-general-data-retrieval" class="section level2">
 <h2 class="hasAnchor">
 <a href="#api-queries-and-general-data-retrieval" class="anchor"></a>API queries and general data retrieval</h2>
+<div id="api-data-types" class="section level3">
+<h3 class="hasAnchor">
+<a href="#api-data-types" class="anchor"></a>API data types</h3>
 <p>The API can return the following type of data</p>
 <ul>
-<li>JSON (subject’s hydras or cubes)</li>
-<li>JSONP (dimensions of a cube)</li>
-<li>JSONSTAT (data of a cube)</li>
+<li>JSON (API meta information: hrefs and names of datasets)</li>
+<li>JSONP (dimensions of a dataset: data labels and classifications)</li>
+<li>JSONSTAT (data)</li>
 </ul>
-<p>The main API interaction is coded in api.R. The function <code><a href="../reference/getFromAPI.html">getFromAPI()</a></code> is a general purpose data retrieval function. It takes as parameter the URL and the ‘type’ of the data, which is either ‘meta’ or ‘data’. Depending on the type, the parsing of the response is handled by either jsonlite (meta) or rjstat (data) packages. String manipulation is utilised to handle the JSONP case.</p>
-<p>The general idea is that this main retrieval function is called by more specialised functions which further parse the list into more useful formats (eg. data.frames, specialised S3 classes).</p>
+</div>
+<div id="general-api-queries" class="section level3">
+<h3 class="hasAnchor">
+<a href="#general-api-queries" class="anchor"></a>General API queries</h3>
+<p>The main API interaction is coded in the file <code>api.R</code>. The function <code><a href="../reference/getFromAPI.html">getFromAPI()</a></code> is a general purpose data retrieval function. It takes as parameter the URL and the ‘type’ of the data, which is either ‘meta’ or ‘data’. Depending on the type, the parsing of the response is handled by either jsonlite (meta) or rjstat (data) packages. String manipulation is utilised to handle the JSONP case after which jsonlite is used.</p>
+<p>The general idea is that this main retrieval function is called by more specialised functions, which further parse the content into useful formats (eg. data.frames, specialised S3 classes).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="va">url</span> <span class="op">&lt;-</span> <span class="fu">openthl</span><span class="fu">:::</span><span class="fu">api_data_url</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"epirapo"</span><span class="op">)</span>
 <span class="va">reslist</span> <span class="op">&lt;-</span> <span class="fu">openthl</span><span class="fu">:::</span><span class="fu"><a href="../reference/getFromAPI.html">getFromAPI</a></span><span class="op">(</span><span class="va">url</span>, type <span class="op">=</span> <span class="st">"meta"</span><span class="op">)</span>
@@ -145,6 +158,10 @@
 <span class="co">#&gt; [1] "character"    "api-data-url"</span>
 <span class="co">#&gt; attr(,"status")</span>
 <span class="co">#&gt; [1] 200</span></pre></div>
+</div>
+<div id="api-urls" class="section level3">
+<h3 class="hasAnchor">
+<a href="#api-urls" class="anchor"></a>API URL’s</h3>
 <p>There are two public base URLs for the API: beta and prod.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu">openthl</span><span class="fu">:::</span><span class="fu">url_base</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prod"</span><span class="op">)</span> <span class="co"># default</span>
@@ -164,27 +181,35 @@
 <span class="co">#&gt; [1] "https://sampo.thl.fi/pivot/prod/api"</span>
 <span class="co">#&gt; attr(,"class")</span>
 <span class="co">#&gt; [1] "character"    "api-data-url"</span></pre></div>
-<p>Relevant source codes</p>
+<p>Relevant source codes:</p>
 <ul>
 <li>api.R</li>
 <li>urls.R</li>
 </ul>
-<p>Development thoughts:</p>
+<p><em>Development thoughts</em>:</p>
 <ul>
 <li>There is currently no clear plan on how to query the beta API.</li>
-<li>the scope of the package could maybe be restricted to JSON data and hence all function arguments related to the format are not needed.</li>
+<li>the scope of the package could maybe be restricted to JSON data and hence all function arguments related to the format may not be needed.</li>
 </ul>
+</div>
 </div>
 <div id="api-exploration-and-user-starting-point" class="section level2">
 <h2 class="hasAnchor">
 <a href="#api-exploration-and-user-starting-point" class="anchor"></a>API exploration and user starting point</h2>
+<div id="api-terminology" class="section level3">
+<h3 class="hasAnchor">
+<a href="#api-terminology" class="anchor"></a>API terminology</h3>
 <p>The API terminology includes the following hierarchy</p>
 <ul>
 <li>aihealue (subject)</li>
 <li>hydra (hydra)</li>
 <li>kuutio (cube)</li>
 </ul>
-<p>The subject is a bit like schema. A subject can include multiple hydras. A hydra can include multiple cubes. A cube is a multidimensional dataset with labels according to a single language. I believe that there are always as many cubes in the hydra as there are translations to the dataset.</p>
+<p>The subject is a bit like a schema. A single subject can include multiple hydras. A single hydra can include multiple cubes. A cube is a dataset with labels according to a single language. I believe that there are always as many cubes in the hydra as there are translations to the dataset.</p>
+</div>
+<div id="user-interaction-with-the-terminology" class="section level3">
+<h3 class="hasAnchor">
+<a href="#user-interaction-with-the-terminology" class="anchor"></a>User interaction with the terminology</h3>
 <p><code><a href="../reference/thlHydra.html">thlSubject()</a></code> lists all cubes belonging to a subject</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="va">subject</span> <span class="op">&lt;-</span> <span class="st">"epirapo"</span>
@@ -199,7 +224,7 @@
 <span class="co">#&gt; 4 https://sampo.thl.fi/pivot/prod/en/… Self-reported COVID-19 sympto… data…</span>
 <span class="co">#&gt; 5 https://sampo.thl.fi/pivot/prod/fi/… Itseilmoitetut koronaoireet    data…</span>
 <span class="co">#&gt; 6 https://sampo.thl.fi/pivot/prod/sv/… Självrapporterade COVID-19 sy… data…</span></pre></div>
-<p><code><a href="../reference/thlHydra.html">thlDatasets()</a></code> takes the output of <code><a href="../reference/thlHydra.html">thlSubject()</a></code> and presents the same information, but parses the hrefs into columns. There is probably no good reason why <code><a href="../reference/thlHydra.html">thlDatasets()</a></code> could not simply accept the subject character name as input, but currently it only accepts the object returned by <code><a href="../reference/thlHydra.html">thlSubject()</a></code></p>
+<p><code><a href="../reference/thlHydra.html">thlDatasets()</a></code> takes the output of <code><a href="../reference/thlHydra.html">thlSubject()</a></code> and presents the same information, but parses the hrefs into columns. There is probably no good reason why <code><a href="../reference/thlHydra.html">thlDatasets()</a></code> could not simply accept the subject character name as input, but currently it only accepts the object returned by <code><a href="../reference/thlHydra.html">thlSubject()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="fu"><a href="../reference/thlHydra.html">thlDatasets</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt;                           base_url lang subject       hydra</span>
@@ -225,17 +250,25 @@
 <span class="co">#&gt; 1 https://sampo.thl.fi/pivot/prod/en/… COVID-19 cases in the infecti… data…</span>
 <span class="co">#&gt; 2 https://sampo.thl.fi/pivot/prod/fi/… Tartuntatautirekisterin COVID… data…</span>
 <span class="co">#&gt; 3 https://sampo.thl.fi/pivot/prod/sv/… Antal fall av COVID-19 i regi… data…</span></pre></div>
-<p>Development needs:</p>
+<p><em>Development thoughts</em>:</p>
 <ul>
-<li>It is a bit unclear what is the usual starting point for the user. Is it an url to a cube? Is it an URL to a hydra? Is it the name of the subject and hydra?</li>
+<li>It is a bit unclear what should be the starting point for the user. Is it an url to a cube? Is it an URL to a hydra? Is it the name of the subject and hydra?</li>
 <li>thlDatasets should probably take as input the subject name (i.e. call thlSubject() internally first)</li>
 </ul>
 <p>Main functionality source file location: <code>retrieve.R</code></p>
 </div>
-<div id="cube-dimensions" class="section level2">
+</div>
+<div id="cube-dimensions-labels-and-metadata" class="section level2">
 <h2 class="hasAnchor">
-<a href="#cube-dimensions" class="anchor"></a>Cube dimensions</h2>
+<a href="#cube-dimensions-labels-and-metadata" class="anchor"></a>Cube dimensions: labels and metadata</h2>
+<div id="dimensions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#dimensions" class="anchor"></a>Dimensions</h3>
 <p>A single dimension in the cube is a hierarchical structure with multiple stages. An example is Area with stages hospital district (stage 1) and municipality (stage 2).</p>
+</div>
+<div id="thlcube-object" class="section level3">
+<h3 class="hasAnchor">
+<a href="#thlcube-object" class="anchor"></a>thlCube object</h3>
 <p>the thlCube function now returns an object which includes</p>
 <ul>
 <li>url: the url of the cube (fact url), which is also the argument of thlCube</li>
@@ -248,6 +281,10 @@
 <span class="va">cube</span> <span class="op">&lt;-</span> <span class="fu">openthl</span><span class="fu">::</span><span class="fu"><a href="../reference/thlCube.html">thlCube</a></span><span class="op">(</span><span class="va">url</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cube</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span>
 <span class="co">#&gt; [1] "area"     "time"     "provider" "measure"</span></pre></div>
+</div>
+<div id="dimensions-object" class="section level3">
+<h3 class="hasAnchor">
+<a href="#dimensions-object" class="anchor"></a>Dimensions object</h3>
 <p>The hierarchical dimension information is presented as a wide format data frame. The prefix in the column names indicates the stage. There is a single row per a unique label in the highest hierarchy level. In the example below the highest hierarchy level is municipality, so there are 311 rows (number of municipalities) in the dimension data.frame.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">cube</span><span class="op">$</span><span class="va">dimensions</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># first dimension</span>
@@ -287,9 +324,9 @@
 <span class="co">#&gt;   ..$ parent_id : chr "area"</span>
 <span class="co">#&gt;  - attr(*, "nstage")= num 3</span></pre></div>
 </div>
-<div id="dimension-retrievalparsing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#dimension-retrievalparsing" class="anchor"></a>Dimension retrieval/parsing</h2>
+<div id="dimension-retrieval-and-parsing" class="section level3">
+<h3 class="hasAnchor">
+<a href="#dimension-retrieval-and-parsing" class="anchor"></a>Dimension retrieval and parsing</h3>
 <p>The function <code>get_dimensions</code> queries the API for dimension information.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"</span>
@@ -334,9 +371,18 @@
 <span class="co">#&gt;   ..$ parent_id: chr "hcdmunicipality2020"</span>
 <span class="co">#&gt;  - attr(*, "nstage")= num 2</span></pre></div>
 </div>
+</div>
 <div id="data-retrieval" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-retrieval" class="anchor"></a>Data retrieval</h2>
+<div id="backend" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend" class="anchor"></a>Backend</h3>
+<p>Data retriaval and parsing is largely unimplemented. The general data retriaval function with type ‘data’ should be tested and parsing implemented.</p>
+</div>
+<div id="user-interface" class="section level3">
+<h3 class="hasAnchor">
+<a href="#user-interface" class="anchor"></a>User interface</h3>
 <p>Methods could be written which utilise the object returned by <code><a href="../reference/thlCube.html">openthl::thlCube</a></code>, which contains the dimension meta informantion, to build queries which</p>
 <ul>
 <li>retrieve data</li>
@@ -349,6 +395,7 @@
 <li>collect() (retrieves the data)</li>
 </ul>
 <p>Some choices need to be made regarding how the user refers to the dimensions and measures, i.e. whether to use ID’s or labels. It may make sense to use ID’s when select():ing. A stage could be referred to by for example <dimension_id>.<stage_id>. This needs some consideration and exploration on what is most straight forward.</stage_id></dimension_id></p>
+</div>
 </div>
   </div>
 
