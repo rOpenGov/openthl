@@ -9,7 +9,7 @@ Status](https://travis-ci.org/rOpenGov/openthl.svg?branch=master)](https://travi
 GitHub](https://img.shields.io/github/watchers/ropengov/openthl.svg?style=social)](https://github.com/ropengov/openthl/watchers)
 [![Star on
 GitHub](https://img.shields.io/github/stars/ropengov/openthl.svg?style=social)](https://github.com/ropengov/openthl/stargazers)
-[![Follow](https://img.shields.io/twitter/follow/ropengov.svg?style=social)](https://twitter.com/intent/follow?screen_name=ropengov)
+[![Follow](https://img.shields.io/twitter/follow/ropengov.svg?style=social)](https://twitter.com/intent/follow?screen_name=ropengov) [![Join the chat at https://gitter.im/rOpenGov/openthl](https://badges.gitter.im/rOpenGov/openthl.svg)](https://gitter.im/rOpenGov/openthl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <br>
 
