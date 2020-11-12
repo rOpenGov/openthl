@@ -199,11 +199,19 @@ DF <- openthl:::parse_dimensions(dimensions)
 names(DF)
 ```
 
-`parse_dimensions()` uses `getHierarchy()`, which parses a single dimension as a data frame.
+`parse_dimensions()` uses `parse_dimension_hierarchy()`, which parses a single dimension as a data frame.
 
 ```{r}
-# parse a single dimension as a data frame
-df <- openthl:::getHierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
+# parse a single dimension as wide a data frame
+df <- openthl:::parse_dimension_hierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
+str(df)
+```
+
+```{r}
+# parse a single dimension as a long data frame
+df <- openthl:::parse_dimension_hierarchy(dimensions$children[[1]], 
+                                          parent_id = dimensions$id[[1]],
+                                          format = "long")
 str(df)
 ```
 

@@ -46,13 +46,9 @@ parse_datasets <- function(x, base_url) {
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
 #' dimensions <- openthl:::get_dimensions(url)
-#' x1 <- openthl:::parse_dimensions(dimensions)
-#' names(x1)
-#' str(x1[[1]])
-#'
-#' x2 <- openthl:::parse_dimensions(dimensions, format = "long")
-#' names(x2)
-#' str(x2[[1]])
+#' x <- openthl:::parse_dimensions(dimensions, format = "long")
+#' names(x)
+#' str(x[[1]])
 parse_dimensions <- function(dimensions, format = c("wide", "long")) {
 
   dims <- list()
@@ -87,12 +83,7 @@ parse_dimensions <- function(dimensions, format = c("wide", "long")) {
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
 #' dimensions <- openthl:::get_dimensions(url)
-#'
-#' df <- openthl:::parse_dimension_hierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]])
-#'
 #' df_long <- openthl:::parse_dimension_hierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]], format = "long")
-#'
-#' str(df)
 #' str(df_long)
 parse_dimension_hierarchy <- function(stage, parent_id = NA, nstage = 0, format = c("wide", "long")) {
 
