@@ -71,6 +71,8 @@ parse_dimensions <- function(dimensions, format = c("wide", "long")) {
 #' @param stage a hierarchical list with dimension stage and it's children.
 #' @param parent_id Id of the parent of the stage.
 #' @param nstage The depth of the stage relative to the root (which is 0).
+#' @param format One of 'wide', 'long'. Controls whether dimension
+#' data.frames are parsed in long or wide format. Default is 'wide' (may change).
 #'
 #' Recursively retrieve all children of the dimension and flatten as a single data frame.
 #' Helper for parse_dimensions()
@@ -82,9 +84,11 @@ parse_dimensions <- function(dimensions, format = c("wide", "long")) {
 #' @examples
 #'
 #' url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.json"
-#' dimensions <- openthl:::get_dimensions(url)
-#' df_long <- openthl:::parse_dimension_hierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]], format = "long")
+#' dimensions <- openthl::get_dimensions(url)
+#' df_long <- openthl::parse_dimension_hierarchy(dimensions$children[[1]], parent_id = dimensions$id[[1]], format = "long")
 #' str(df_long)
+#' 
+#' @export
 parse_dimension_hierarchy <- function(stage, parent_id = NA, nstage = 0, format = c("wide", "long")) {
 
   format <- match.arg(format)

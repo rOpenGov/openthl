@@ -65,9 +65,12 @@ thlDatasets <- function(x) {
 #' @param url URL to hydra fact
 #'
 #' @examples
-#'
+#' \dontrun{
 #' url <- "https://sampo.thl.fi/pivot/prod/fi/toitu/ennakko3/fact_toitu_ennakko.json"
-#' dimensions <- openthl:::get_dimensions(url)
+#' dimensions <- openthl::get_dimensions(url)
+#' }
+#' 
+#' @export
 get_dimensions <- function(url) {
 
   url_new <- gsub(".json$","", url)
@@ -128,6 +131,3 @@ thlCube <- function(url) {
 print.thl_cube <- function(x) {
   cat("Cube with columns", colnames(x))
 }
-
-
-
