@@ -30,3 +30,6 @@ cran-comments.md
 
 # Misc
 .*~
+^doc$
+^Meta$
+^\.github$
