@@ -52,7 +52,6 @@ Please send pull requests against the **dev branch** as follows:
 * *Others*: Clone the repository and pull against the dev branch.
 
 
-
 ### Acknowledgements
 
 We are grateful to all [contributors](https://github.com/rOpenGov/openthl/graphs/contributors), and for [THL open data portal](https://thl.fi/en/web/thlfi-en/statistics/statistical-databases/open-data)! 
