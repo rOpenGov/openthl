@@ -48,8 +48,8 @@ Contributions are very welcome:
   
 Please send pull requests against the **dev branch** as follows:
 
-* *Collaborators*: Create a feature branch, pull versus the dev branch and once merged, always delete the feature branch.
-* *Others*: Clone the repository and pull against the dev branch.
+* *Collaborators*: Create a feature branch, create a PR versus the dev branch and once merged, always delete the feature branch.
+* *Others*: Clone the repository and create a PR against the dev branch.
 
 
 ### Acknowledgements
